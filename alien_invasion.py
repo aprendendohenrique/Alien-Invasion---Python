@@ -34,7 +34,9 @@ class AlienInvasion:
         self.game_active = False
 
         # Make the Play button.
-        self.play_button = Button(self, "Play")
+        self.easy_button = Button(self, "Easy", (0, 135, 0), 100)
+        self.medium_button = Button(self, "Medium", (135, 65,0), 400)
+        self.hard_button = Button(self, "Hard", (135, 0, 0), 700)
 
         # Create an instance to store game statistics.
         self.stats = GameStats(self)
@@ -73,8 +75,15 @@ class AlienInvasion:
                 mouse_pos = pygame.mouse.get_pos()
 
                 # Check if mouse is inside the play button:
-                if self.play_button.rect.collidepoint(mouse_pos):
+                if self.easy_button.rect.collidepoint(mouse_pos):
                     self._start_game()
+                    self.settings.initialize_easy_dynamic_settings()
+                if self.medium_button.rect.collidepoint(mouse_pos):
+                    self._start_game()
+                    self.settings.initialize_medium_dynamic_settings()
+                if self.hard_button.rect.collidepoint(mouse_pos):
+                    self._start_game()
+                    self.settings.initialize_hard_dynamic_settings()
             elif event.type == pygame.KEYDOWN:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
@@ -83,9 +92,7 @@ class AlienInvasion:
 
     def _check_keydown_events(self, event):
         """Respond to keypresses."""
-        if event.key == pygame.K_p:
-            self._start_game()
-        elif event.key == pygame.K_RIGHT:
+        if event.key == pygame.K_RIGHT:
             self.ship.moving_right = True
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = True
@@ -105,7 +112,6 @@ class AlienInvasion:
         """Start a new game when the player clicks Play."""
         if not self.game_active:
             # Reset the game statistics.
-            self.settings.initialize_dynamic_settings()
             self.stats.reset_stats()
             self.game_active = True
 
@@ -301,7 +307,9 @@ class AlienInvasion:
 
         # Draw the play button if the game is inactive.
         if not self.game_active:
-            self.play_button.draw_button()
+            self.easy_button.draw_button()
+            self.medium_button.draw_button()
+            self.hard_button.draw_button()
 
         pygame.display.flip()
 
