@@ -12,6 +12,7 @@ from alien import Alien
 from button import Button
 from star import Star
 from rain import Raindrop
+from scoreboard import Scoreboard
 
 class AlienInvasion:
     """Overall class to manage game assets and behavior."""
@@ -38,8 +39,10 @@ class AlienInvasion:
         self.medium_button = Button(self, "Medium", (135, 65,0), 400)
         self.hard_button = Button(self, "Hard", (135, 0, 0), 700)
 
-        # Create an instance to store game statistics.
+        # Create an instance to store game statistics,
+        #   and create a scoreboard.
         self.stats = GameStats(self)
+        self.sb = Scoreboard(self)
 
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
@@ -175,6 +178,10 @@ class AlienInvasion:
             self.bullets.empty()
             self._create_fleet()
             self.settings.increase_speed()
+        if collisions:
+            for aliens in collisions.values():
+                self.stats.score += self.settings.alien_points
+            self.sb.prep_score()
 
     def _create_alien(self, x_position, y_position):
         """Create an alien and place it in the row."""
@@ -304,6 +311,8 @@ class AlienInvasion:
             bullet.draw_bullet()
         self.ship.blitme()
         self.aliens.draw(self.screen)
+        # Draw the score information.
+        self.sb.show_score()
 
         # Draw the play button if the game is inactive.
         if not self.game_active:
